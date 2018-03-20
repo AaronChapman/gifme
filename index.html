@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<link rel="stylesheet" href="assets/css/styles.css">
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	</head>
+
+	<body>
+		<div class="option_buttons">
+			<input type="text" placeholder=" add a new category of gifs" class="category_addition_input">
+			<ul>
+				<li>
+					<input type="button" value="add category" class="option_button add_category">
+				</li>
+				<li>
+					<input type="button" value="remove current category" class="option_button remove_category">
+				</li>
+			</ul>
+		</div>
+		<div class="category_buttons">
+			<input type="button" value="walrus" class="category_button">
+			<input type="button" value="cheetah" class="category_button">
+			<input type="button" value="koala" class="category_button">
+		</div>
+		<p class="status_message">choose or add a category of gifs</p>
+		<div class="gif_board"></div>
+	</body>
+
+	<script>
+		var query_url_base = "https://api.giphy.com/v1/gifs/search?q=";
+		var api_key = "d4yPfpaYz2cEvmJp1Mrg40WSQT3Vrwy8";
+		var category_input = "";
+
+		$(".add_category").on("click", function() {
+			if ($(".category_addition_input").val()) {
+				category_input = $(".category_addition_input").val();
+
+				var category_button = $("<input>");
+
+				category_button.prop('type', 'button');
+				category_button.prop('value', category_input);
+				category_button.addClass("category_button");
+
+				$(".category_buttons").append(category_button);
+
+				populate_gif_board();
+			} else
+				$(".status_message").text("enter a gif category to add");
+		});
+
+		$(".remove_category").on("click", function() {
+			if (category_input) {
+				$('.category_buttons :input[type=button]').each(function() {
+					if ($(this).val() === category_input)
+						$(this).remove()
+						});
+
+				$(".gif_board").empty();
+				$(".status_message").text("choose or add a category of gifs");
+			} else
+				$(".status_message").text("no category selected");
+		});
+
+		$(document).ready(function() {
+			$(".gif_board").on("click", ".gif", function() {
+				var clicked_gif = $(this)[0];
+
+				if ($(clicked_gif).data('state') === "still") {
+					$(clicked_gif).data('state', "animate");
+					$(clicked_gif).attr('src', $(clicked_gif).data('animated'));
+				} else {
+					$(clicked_gif).data('state', "still");
+					$(clicked_gif).attr('src', $(clicked_gif).data('still'));
+				}
+			});
+
+			$(".category_buttons").on("click", ".category_button", function() {
+				category_input = $(this).val();
+
+				populate_gif_board();
+			});
+		});
+
+		function populate_gif_board() {
+			$(".gif_board").empty();
+			$(".category_addition_input").val("");
+			$(".status_message").text("click to play any gif (might take a second to load)");
+
+			query_url = "";
+			query_url = query_url_base + category_input + "&rating=pg-13&limit=9&api_key=" + api_key;
+
+			$.ajax({
+				url: query_url,
+				method: "GET"
+			}).done(function(response) {
+				var results = response.data;
+
+				for (var i = 0; i < 9; i++) {
+					var still_url = results[i].images.fixed_width_still.url, 
+						animated_url = results[i].images.fixed_width.url;
+					var the_gif = $("<img>");
+					var gif_rating = $("<p>");
+					var gif_panel = $("<div>");
+					var gif_board = $(".gif_board");
+
+					the_gif.addClass("gif");
+					the_gif.attr('src', still_url);
+					the_gif.data('still', still_url);
+					the_gif.data('animated', animated_url);
+					the_gif.data('state', "still");
+
+					gif_rating.addClass("gif_rating");
+					gif_rating.text(results[i].rating);
+
+					gif_panel.addClass("gif_panel");
+					gif_panel.append(gif_rating);
+					gif_panel.append(the_gif);
+
+					gif_board.append(gif_panel);
+				}
+			});
+		}
+	</script>
+</html>
