@@ -2,6 +2,10 @@
 	font-family: Arial;
 }
 
+.add_category {
+	background: #89CADF !important;
+}
+
 .category_button, .option_button {
 	margin: 10px 10px 10px 10px;
 	background: #2323;
@@ -36,6 +40,9 @@
 	width: 200px;
 	margin: 27px 0 0 0;
 	border-radius: 5px;
+	position: relative;
+	text-align: center;
+	box-shadow: 0 2px 2px #545454;
 }
 
 .gif {
@@ -46,6 +53,9 @@
 	background-position: center center;
 	background-size: cover;
 	cursor: pointer;
+	border-radius: 15px;
+	opacity: 0.5;
+	box-shadow: 0 2px 2px #545454;
 }
 
 .gif_board {
@@ -70,12 +80,27 @@
 	margin-top: 15px;
 }
 
-input {
-	outline: none;
+.remove_category {
+	background: #e18888;
+	box-shadow: 0 2px 2px #545454;
 }
 
-p {
+.status_message {
 	text-align: center;
+	font-size: 12px;
+	opacity: 0.75;
+}
+
+body {
+	padding: 2.5% 0;
+	margin: 0;
+	background: url("https://i.imgur.com/zV52J8F.jpg");
+	background-position: center;
+	background-size: cover;
+}
+
+input {
+	outline: none;
 }
 
 ul {
